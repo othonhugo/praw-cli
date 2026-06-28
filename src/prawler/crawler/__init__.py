@@ -1,3 +1,8 @@
+from .comment import (
+    CommentCrawler,
+    SubmissionCommentConfig,
+    UserCommentConfig,
+)
 from .post import (
     PostCrawler,
     SearchCrawlConfig,
@@ -10,12 +15,15 @@ from .post import (
 )
 
 __all__ = [
+    "CommentCrawler",
     "PostCrawler",
     "SearchCrawlConfig",
     "SearchSort",
+    "SubmissionCommentConfig",
     "SubredditCrawlConfig",
     "SubredditSort",
     "TimeFilter",
     "UrlCrawlConfig",
+    "UserCommentConfig",
     "UserCrawlConfig",
 ]
