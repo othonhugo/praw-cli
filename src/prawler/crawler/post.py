@@ -110,9 +110,7 @@ class PostCrawler:
             case SubredditSort.CONTROVERTIAL:
                 submissions = redditor.hot()
 
-        yield from self._map(
-            item for item in submissions if isinstance(item, Submission)
-        )
+        yield from self._map(item for item in submissions if isinstance(item, Submission))
 
     def from_url(self, cfg: UrlCrawlConfig) -> Iterator[Post]:
         submission = self._client.submission(url=cfg.url)

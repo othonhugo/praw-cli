@@ -44,9 +44,7 @@ class RedditPrawClient:
         wait=wait_exponential(multiplier=1, min=2, max=30),
         reraise=True,
     )
-    def submission(
-        self, *, url: str | None = None, id: str | None = None
-    ) -> praw.models.Submission:
+    def submission(self, *, url: str | None = None, id: str | None = None) -> praw.models.Submission:
         if url:
             return self._reddit.submission(url=url)
 

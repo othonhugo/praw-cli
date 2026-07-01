@@ -33,9 +33,7 @@ class CommentCrawler:
 
         submission.comments.replace_more(limit=cfg.limit)
 
-        yield from self._map(
-            item for item in submission.comments.list() if isinstance(item, praw.models.Comment)
-        )
+        yield from self._map(item for item in submission.comments.list() if isinstance(item, praw.models.Comment))
 
     def from_user(self, cfg: UserCommentConfig) -> Iterator[Comment]:
         redditor = self._client.redditor(cfg.username)
@@ -50,9 +48,7 @@ class CommentCrawler:
             case _:
                 comments = redditor.comments.new(limit=cfg.limit)
 
-        yield from self._map(
-            item for item in comments if isinstance(item, praw.models.Comment)
-        )
+        yield from self._map(item for item in comments if isinstance(item, praw.models.Comment))
 
     def _map(self, comments: Iterable[praw.models.Comment]) -> Iterator[Comment]:
         for comment in comments:

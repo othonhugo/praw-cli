@@ -8,7 +8,17 @@ from prawler.output import get_formatter, make_sink
 from prawler.pipeline import build_pipeline, make_field_select_stage, make_filter_stage
 
 
-def search(query: QueryArg, subreddit: SubredditOption = "all", sort: SearchSortOption = SearchSort.RELEVANCE, time_filter: TimeFilterOption = TimeFilter.ALL, limit: LimitOption = 100, format: FormatOption = "jsonl", output: OutputOption = "-", fields: FieldsOption = None, filter: FilterOption = None) -> None:
+def search(
+    query: QueryArg,
+    subreddit: SubredditOption = "all",
+    sort: SearchSortOption = SearchSort.RELEVANCE,
+    time_filter: TimeFilterOption = TimeFilter.ALL,
+    limit: LimitOption = 100,
+    format: FormatOption = "jsonl",
+    output: OutputOption = "-",
+    fields: FieldsOption = None,
+    filter: FilterOption = None,
+) -> None:
     """Search Reddit posts."""
 
     cfg = get_config()
