@@ -51,6 +51,11 @@ FieldsOption = Annotated[
     typer.Option("--fields", help="Comma-separated list of fields to include."),
 ]
 
+FilterOption = Annotated[
+    list[str] | None,
+    typer.Option("--filter", "-F", help="Filter expression (repeatable)."),
+]
+
 TimeFilterOption = Annotated[
     TimeFilter,
     typer.Option("--time", "-t", help="Time window (top/controversial only)."),

@@ -1,4 +1,4 @@
-from . import cli, client, crawler, model, output
+from . import cli, client, crawler, model, output, pipeline
 
 __all__ = [
     "cli",
@@ -6,4 +6,5 @@ __all__ = [
     "crawler",
     "model",
     "output",
+    "pipeline",
 ]

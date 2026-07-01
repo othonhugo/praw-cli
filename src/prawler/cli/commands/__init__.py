@@ -1,11 +1,11 @@
-from .comments import app as comments_app
-from .posts import app as posts_app
-from .search import app as search_app
-from .user import app as user_app
+from .comments import comments
+from .posts import posts
+from .search import search
+from .user import user
 
 __all__ = [
-    "comments_app",
-    "posts_app",
-    "search_app",
-    "user_app",
+    "comments",
+    "posts",
+    "search",
+    "user",
 ]
