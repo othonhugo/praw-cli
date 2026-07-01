@@ -5,7 +5,25 @@ from collections.abc import Callable, Iterator
 
 from prawler.pipeline.stage import PipelineStage, Record
 
-OPERATORS = ["~=", "!=", ">=", "<=", " in ", ">", "<", "="]
+OPERATORS = [
+    " starts_with ",
+    " ends_with ",
+    " has_all ",
+    " len>= ",
+    " len<= ",
+    " len> ",
+    " len< ",
+    " len= ",
+    " has ",
+    " in ",
+    "~=",
+    "!=",
+    ">=",
+    "<=",
+    ">",
+    "<",
+    "=",
+]
 
 Predicate = Callable[[Record], bool]
 
@@ -13,9 +31,11 @@ Predicate = Callable[[Record], bool]
 def _parse(expr: str) -> tuple[str, str, str]:
     for op in OPERATORS:
         idx = expr.find(op)
+
         if idx != -1:
             field = expr[:idx].strip()
             value = expr[idx + len(op) :].strip()
+
             return field, op.strip(), value
 
     raise ValueError(f"Invalid filter expression: {expr}")
@@ -50,22 +70,54 @@ def _make_predicate(field: str, op: str, raw_value: str) -> Predicate:
 
         case ">=" | "<=" | ">" | "<":
             target = _coerce(raw_value)
-            ops: dict[str, Callable[[float, float], bool]] = {
-                ">=": float.__ge__,
-                "<=": float.__le__,
-                ">": float.__gt__,
-                "<": float.__lt__,
-            }
-            cmp = ops[op]
-            return lambda r: cmp(float(r.get(field, 0)), float(target))  # type: ignore[arg-type]
+
+            ops_float = {">=": float.__ge__, "<=": float.__le__, ">": float.__gt__, "<": float.__lt__}
+            ops_str = {">=": str.__ge__, "<=": str.__le__, ">": str.__gt__, "<": str.__lt__}
+
+            def _cmp(val: object, tgt: object) -> bool:
+                if isinstance(tgt, (int, float)):
+                    try:
+                        return ops_float[op](float(str(val)), float(tgt))
+                    except (ValueError, TypeError):
+                        pass
+
+                return ops_str[op](str(val), str(tgt))
+
+            return lambda r: _cmp(r.get(field, ""), target)
+
+        case "len>=" | "len<=" | "len>" | "len<" | "len=":
+            target_len = int(raw_value)
+
+            ops_len = {"len>=": int.__ge__, "len<=": int.__le__, "len>": int.__gt__, "len<": int.__lt__, "len=": int.__eq__}
+            cmp_len = ops_len[op]
+
+            return lambda r: cmp_len(len(str(r.get(field, ""))), target_len)
+
+        case "starts_with":
+            return lambda r: str(r.get(field, "")).startswith(raw_value)
+
+        case "ends_with":
+            return lambda r: str(r.get(field, "")).endswith(raw_value)
 
         case "~=":
             pattern = re.compile(raw_value, re.IGNORECASE)
+
             return lambda r: bool(pattern.search(str(r.get(field, ""))))
 
         case "in":
             values = {v.strip() for v in raw_value.split(",")}
+
             return lambda r: str(r.get(field, "")) in values
+
+        case "has":
+            keywords_any = [v.strip().lower() for v in raw_value.split(",")]
+
+            return lambda r: any(k in str(r.get(field, "")).lower() for k in keywords_any)
+
+        case "has_all":
+            keywords_all = [v.strip().lower() for v in raw_value.split(",")]
+
+            return lambda r: all(k in str(r.get(field, "")).lower() for k in keywords_all)
 
         case _:
             raise ValueError(f"Unknown operator: {op}")
