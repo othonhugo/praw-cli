@@ -49,9 +49,7 @@ class CommentCrawler:
                 comments = redditor.comments.new(limit=cfg.limit)
 
         yield from self._map(
-            item
-            for item in comments
-            if isinstance(item, praw.models.Comment)
+            item for item in comments if isinstance(item, praw.models.Comment)
         )
 
     def _map(self, comments) -> Iterator[Comment]:

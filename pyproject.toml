@@ -7,7 +7,11 @@ requires-python = ">=3.12"
 dependencies = [
     "praw>=8.0.2",
     "tenacity>=9.1.4",
+    "typer[all]>=0.12.0",
 ]
+
+[project.scripts]
+prawler = "prawler.cli:app"
 
 [dependency-groups]
 dev = [
@@ -15,3 +19,9 @@ dev = [
     "pytest>=9.1.1",
     "ruff>=0.15.20",
 ]
+
+[tool.ruff]
+line-length = 200
+
+[tool.mypy]
+strict = true

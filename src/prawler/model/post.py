@@ -1,5 +1,3 @@
-"""Post — immutable model representing a Reddit submission."""
-
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
