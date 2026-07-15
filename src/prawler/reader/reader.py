@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import csv
-import io
 import json
 import sys
 from collections.abc import Iterator
 from enum import StrEnum
 from pathlib import Path
+from typing import IO
 
 from prawler.pipeline.stage import Record
 
@@ -64,7 +64,7 @@ class FileReader:
 
         return FileFormat(name)
 
-    def _parse(self, fh: io.TextIOBase, fmt: FileFormat, name: str) -> Iterator[Record]:
+    def _parse(self, fh: IO[str], fmt: FileFormat, name: str) -> Iterator[Record]:
         match fmt:
             case FileFormat.JSONL:
                 yield from self._parse_jsonl(fh)
@@ -74,7 +74,7 @@ class FileReader:
                 yield from self._parse_csv(fh)
 
     @staticmethod
-    def _parse_jsonl(fh: io.TextIOBase) -> Iterator[Record]:
+    def _parse_jsonl(fh: IO[str]) -> Iterator[Record]:
         for lineno, line in enumerate(fh, start=1):
             line = line.strip()
 
@@ -89,10 +89,10 @@ class FileReader:
             if not isinstance(obj, dict):
                 raise TypeError(f"Expected a JSON object on line {lineno}, got {type(obj).__name__}")
 
-            yield obj  # type: ignore[misc]
+            yield obj
 
     @staticmethod
-    def _parse_json(fh: io.TextIOBase, name: str) -> Iterator[Record]:
+    def _parse_json(fh: IO[str], name: str) -> Iterator[Record]:
         try:
             data = json.load(fh)
         except json.JSONDecodeError as exc:
@@ -105,11 +105,11 @@ class FileReader:
             if not isinstance(item, dict):
                 raise TypeError(f"Expected a JSON object at index {idx}, got {type(item).__name__}")
 
-            yield item  # type: ignore[misc]
+            yield item
 
     @staticmethod
-    def _parse_csv(fh: io.TextIOBase) -> Iterator[Record]:
+    def _parse_csv(fh: IO[str]) -> Iterator[Record]:
         reader = csv.DictReader(fh)
 
         for row in reader:
-            yield dict(row)  # type: ignore[misc]
+            yield dict(row)
