@@ -1,6 +1,6 @@
 [project]
 name = "praw-cli"
-version = "0.6.0"
+version = "0.7.0"
 description = "Composable Reddit crawler CLI with lazy pipelines, powerful filtering, reproducible datasets, and flexible output formats."
 readme = "README.md"
 requires-python = ">=3.12"
