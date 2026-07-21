@@ -28,6 +28,9 @@ Extracts posts (submissions) from a specific subreddit.
 
 Extracts comments based on a post URL, post ID, or username.
 
+- `--limit` applies after filtering, so the CLI keeps pulling comments until it finds the requested number of matches or the source is exhausted.
+- For a single submission, this still depends on that thread having enough matching comments.
+
 - **Basic syntax:**
 
   ```bash
